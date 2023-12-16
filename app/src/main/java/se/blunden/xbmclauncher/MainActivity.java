@@ -46,7 +46,16 @@ public class MainActivity extends Activity {
         activityIntent.addCategory(Intent.CATEGORY_HOME);
         activityIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
+    	int attempts = 0;
+	int maxAttempts = 10; // You can adjust this value based on your requirements
+	    
 		try {
+			//check if connected!
+		        while (!isNetworkAvailable() && attempts < maxAttempts) {
+		            attempts++;
+		            // Wait to connect
+		            Thread.sleep(1000);
+		        }		
 			startActivity(activityIntent);
         }
 		catch (ActivityNotFoundException e)	{
@@ -79,4 +88,11 @@ public class MainActivity extends Activity {
 
 		return matcher.matches();
 	}
+
+	private boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager
+				= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}	
 }
